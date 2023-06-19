@@ -59,4 +59,5 @@ end
 def fast_dance(direction, new_tiles_data_structure)
     new_tiles_data_structure[direction]
 end
+
   
