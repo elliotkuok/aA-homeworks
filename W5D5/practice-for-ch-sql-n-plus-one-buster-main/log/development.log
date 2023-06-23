@@ -1,0 +1,798 @@
+  [1m[35m (143.9ms)[0m  [1m[35mCREATE DATABASE "n_plus_one_buster_development" ENCODING = 'unicode'[0m
+  [1m[35m (120.6ms)[0m  [1m[35mCREATE DATABASE "n_plus_one_buster_test" ENCODING = 'unicode'[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "albums" CASCADE[0m
+  [1m[35m (31.8ms)[0m  [1m[35mCREATE TABLE "albums" ("id" bigserial primary key, "title" character varying NOT NULL, "artist_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE INDEX "index_albums_on_artist_id" ON "albums" ("artist_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "artists" CASCADE[0m
+  [1m[35m (3.5ms)[0m  [1m[35mCREATE TABLE "artists" ("id" bigserial primary key, "name" character varying NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE IF EXISTS "buses" CASCADE[0m
+  [1m[35m (3.4ms)[0m  [1m[35mCREATE TABLE "buses" ("id" bigserial primary key, "model" character varying NOT NULL, "route_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE INDEX "index_buses_on_route_id" ON "buses" ("route_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "drivers" CASCADE[0m
+  [1m[35m (3.6ms)[0m  [1m[35mCREATE TABLE "drivers" ("id" bigserial primary key, "name" character varying NOT NULL, "bus_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE INDEX "index_drivers_on_bus_id" ON "drivers" ("bus_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "gardeners" CASCADE[0m
+  [1m[35m (4.9ms)[0m  [1m[35mCREATE TABLE "gardeners" ("id" bigserial primary key, "name" character varying NOT NULL, "house_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (2.4ms)[0m  [1m[35mCREATE INDEX "index_gardeners_on_house_id" ON "gardeners" ("house_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "houses" CASCADE[0m
+  [1m[35m (3.4ms)[0m  [1m[35mCREATE TABLE "houses" ("id" bigserial primary key, "address" character varying NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE IF EXISTS "plants" CASCADE[0m
+  [1m[35m (5.0ms)[0m  [1m[35mCREATE TABLE "plants" ("id" bigserial primary key, "species" character varying NOT NULL, "gardener_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (2.3ms)[0m  [1m[35mCREATE INDEX "index_plants_on_gardener_id" ON "plants" ("gardener_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "routes" CASCADE[0m
+  [1m[35m (2.4ms)[0m  [1m[35mCREATE TABLE "routes" ("id" bigserial primary key, "number" integer NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "seeds" CASCADE[0m
+  [1m[35m (2.3ms)[0m  [1m[35mCREATE TABLE "seeds" ("id" bigserial primary key, "count" integer NOT NULL, "plant_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE INDEX "index_seeds_on_plant_id" ON "seeds" ("plant_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "tracks" CASCADE[0m
+  [1m[35m (4.5ms)[0m  [1m[35mCREATE TABLE "tracks" ("id" bigserial primary key, "title" character varying NOT NULL, "album_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (2.2ms)[0m  [1m[35mCREATE INDEX "index_tracks_on_album_id" ON "tracks" ("album_id")[0m
+  [1m[35m (3.9ms)[0m  [1m[35mALTER TABLE "albums" ADD CONSTRAINT "fk_rails_124a79559a"
+FOREIGN KEY ("artist_id")
+  REFERENCES "artists" ("id")
+[0m
+  [1m[35m (1.4ms)[0m  [1m[35mALTER TABLE "buses" ADD CONSTRAINT "fk_rails_5b8823fb80"
+FOREIGN KEY ("route_id")
+  REFERENCES "routes" ("id")
+[0m
+  [1m[35m (1.1ms)[0m  [1m[35mALTER TABLE "drivers" ADD CONSTRAINT "fk_rails_b523d39dab"
+FOREIGN KEY ("bus_id")
+  REFERENCES "buses" ("id")
+[0m
+  [1m[35m (0.9ms)[0m  [1m[35mALTER TABLE "gardeners" ADD CONSTRAINT "fk_rails_037f3143f9"
+FOREIGN KEY ("house_id")
+  REFERENCES "houses" ("id")
+[0m
+  [1m[35m (1.1ms)[0m  [1m[35mALTER TABLE "plants" ADD CONSTRAINT "fk_rails_9fda7020f5"
+FOREIGN KEY ("gardener_id")
+  REFERENCES "gardeners" ("id")
+[0m
+  [1m[35m (1.0ms)[0m  [1m[35mALTER TABLE "seeds" ADD CONSTRAINT "fk_rails_af5893cdcd"
+FOREIGN KEY ("plant_id")
+  REFERENCES "plants" ("id")
+[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "tracks" ADD CONSTRAINT "fk_rails_7c47d80164"
+FOREIGN KEY ("album_id")
+  REFERENCES "albums" ("id")
+[0m
+  [1m[35m (3.4ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (40.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20220516140816)[0m
+  [1m[35m (2.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20220516140311),
+(20220516140345),
+(20220516140356),
+(20220516140425),
+(20220516140513),
+(20220516140542),
+(20220516140555),
+(20220516140626),
+(20220516140740);
+
+[0m
+  [1m[35m (5.8ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.4ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2023-06-23 05:40:17.411545"], ["updated_at", "2023-06-23 05:40:17.411545"]]
+  [1m[36mTRANSACTION (159.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "schema_sha1"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.2ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "schema_sha1"], ["value", "5e9d7630e08e4b6d8a70cd7414e8b754077a1b41"], ["created_at", "2023-06-23 05:40:17.579846"], ["updated_at", "2023-06-23 05:40:17.579846"]]
+  [1m[36mTRANSACTION (2.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "albums" CASCADE[0m
+  [1m[35m (4.6ms)[0m  [1m[35mCREATE TABLE "albums" ("id" bigserial primary key, "title" character varying NOT NULL, "artist_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_albums_on_artist_id" ON "albums" ("artist_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "artists" CASCADE[0m
+  [1m[35m (2.9ms)[0m  [1m[35mCREATE TABLE "artists" ("id" bigserial primary key, "name" character varying NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.5ms)[0m  [1m[35mDROP TABLE IF EXISTS "buses" CASCADE[0m
+  [1m[35m (2.2ms)[0m  [1m[35mCREATE TABLE "buses" ("id" bigserial primary key, "model" character varying NOT NULL, "route_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_buses_on_route_id" ON "buses" ("route_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "drivers" CASCADE[0m
+  [1m[35m (3.2ms)[0m  [1m[35mCREATE TABLE "drivers" ("id" bigserial primary key, "name" character varying NOT NULL, "bus_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (2.2ms)[0m  [1m[35mCREATE INDEX "index_drivers_on_bus_id" ON "drivers" ("bus_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "gardeners" CASCADE[0m
+  [1m[35m (4.7ms)[0m  [1m[35mCREATE TABLE "gardeners" ("id" bigserial primary key, "name" character varying NOT NULL, "house_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE INDEX "index_gardeners_on_house_id" ON "gardeners" ("house_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "houses" CASCADE[0m
+  [1m[35m (4.8ms)[0m  [1m[35mCREATE TABLE "houses" ("id" bigserial primary key, "address" character varying NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE IF EXISTS "plants" CASCADE[0m
+  [1m[35m (3.0ms)[0m  [1m[35mCREATE TABLE "plants" ("id" bigserial primary key, "species" character varying NOT NULL, "gardener_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE INDEX "index_plants_on_gardener_id" ON "plants" ("gardener_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "routes" CASCADE[0m
+  [1m[35m (1.8ms)[0m  [1m[35mCREATE TABLE "routes" ("id" bigserial primary key, "number" integer NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "seeds" CASCADE[0m
+  [1m[35m (1.8ms)[0m  [1m[35mCREATE TABLE "seeds" ("id" bigserial primary key, "count" integer NOT NULL, "plant_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE INDEX "index_seeds_on_plant_id" ON "seeds" ("plant_id")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "tracks" CASCADE[0m
+  [1m[35m (3.1ms)[0m  [1m[35mCREATE TABLE "tracks" ("id" bigserial primary key, "title" character varying NOT NULL, "album_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE INDEX "index_tracks_on_album_id" ON "tracks" ("album_id")[0m
+  [1m[35m (1.8ms)[0m  [1m[35mALTER TABLE "albums" ADD CONSTRAINT "fk_rails_124a79559a"
+FOREIGN KEY ("artist_id")
+  REFERENCES "artists" ("id")
+[0m
+  [1m[35m (1.0ms)[0m  [1m[35mALTER TABLE "buses" ADD CONSTRAINT "fk_rails_5b8823fb80"
+FOREIGN KEY ("route_id")
+  REFERENCES "routes" ("id")
+[0m
+  [1m[35m (1.1ms)[0m  [1m[35mALTER TABLE "drivers" ADD CONSTRAINT "fk_rails_b523d39dab"
+FOREIGN KEY ("bus_id")
+  REFERENCES "buses" ("id")
+[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "gardeners" ADD CONSTRAINT "fk_rails_037f3143f9"
+FOREIGN KEY ("house_id")
+  REFERENCES "houses" ("id")
+[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "plants" ADD CONSTRAINT "fk_rails_9fda7020f5"
+FOREIGN KEY ("gardener_id")
+  REFERENCES "gardeners" ("id")
+[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "seeds" ADD CONSTRAINT "fk_rails_af5893cdcd"
+FOREIGN KEY ("plant_id")
+  REFERENCES "plants" ("id")
+[0m
+  [1m[35m (1.1ms)[0m  [1m[35mALTER TABLE "tracks" ADD CONSTRAINT "fk_rails_7c47d80164"
+FOREIGN KEY ("album_id")
+  REFERENCES "albums" ("id")
+[0m
+  [1m[35m (2.5ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20220516140816)[0m
+  [1m[35m (0.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20220516140311),
+(20220516140345),
+(20220516140356),
+(20220516140425),
+(20220516140513),
+(20220516140542),
+(20220516140555),
+(20220516140626),
+(20220516140740);
+
+[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.3ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2023-06-23 05:40:17.743850"], ["updated_at", "2023-06-23 05:40:17.743850"]]
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Update (0.3ms)[0m  [1m[33mUPDATE "ar_internal_metadata" SET "value" = $1, "updated_at" = $2 WHERE "ar_internal_metadata"."key" = $3[0m  [["value", "test"], ["updated_at", "2023-06-23 05:40:17.748984"], ["key", "environment"]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "schema_sha1"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.1ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "schema_sha1"], ["value", "5e9d7630e08e4b6d8a70cd7414e8b754077a1b41"], ["created_at", "2023-06-23 05:40:17.753378"], ["updated_at", "2023-06-23 05:40:17.753378"]]
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTrack Load (0.8ms)[0m  [1m[34mSELECT "tracks".* FROM "tracks"[0m
+  [1m[36mAlbum Load (0.5ms)[0m  [1m[34mSELECT "albums".* FROM "albums"[0m
+  [1m[36mArtist Load (0.4ms)[0m  [1m[34mSELECT "artists".* FROM "artists"[0m
+  [1m[36mDriver Load (0.5ms)[0m  [1m[34mSELECT "drivers".* FROM "drivers"[0m
+  [1m[36mBus Load (0.4ms)[0m  [1m[34mSELECT "buses".* FROM "buses"[0m
+  [1m[36mRoute Load (0.5ms)[0m  [1m[34mSELECT "routes".* FROM "routes"[0m
+  [1m[36mSeed Load (0.5ms)[0m  [1m[34mSELECT "seeds".* FROM "seeds"[0m
+  [1m[36mPlant Load (0.5ms)[0m  [1m[34mSELECT "plants".* FROM "plants"[0m
+  [1m[36mGardener Load (0.5ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners"[0m
+  [1m[36mHouse Load (0.5ms)[0m  [1m[34mSELECT "houses".* FROM "houses"[0m
+  [1m[36mArtist Create (0.6ms)[0m  [1m[32mINSERT INTO "artists" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Beyonce"], ["created_at", "2023-06-23 05:40:17.861399"], ["updated_at", "2023-06-23 05:40:17.861399"]]
+  [1m[36mArtist Create (0.4ms)[0m  [1m[32mINSERT INTO "artists" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Nicki Minaj"], ["created_at", "2023-06-23 05:40:17.864208"], ["updated_at", "2023-06-23 05:40:17.864208"]]
+  [1m[36mArtist Create (0.2ms)[0m  [1m[32mINSERT INTO "artists" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Ciara"], ["created_at", "2023-06-23 05:40:17.865967"], ["updated_at", "2023-06-23 05:40:17.865967"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.7ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Lemonade"], ["artist_id", 1], ["created_at", "2023-06-23 05:40:17.891343"], ["updated_at", "2023-06-23 05:40:17.891343"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.4ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "I Am... Sasha Fierce"], ["artist_id", 1], ["created_at", "2023-06-23 05:40:17.895476"], ["updated_at", "2023-06-23 05:40:17.895476"]]
+  [1m[36mArtist Load (0.4ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.4ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Dangerously in Love"], ["artist_id", 1], ["created_at", "2023-06-23 05:40:17.900977"], ["updated_at", "2023-06-23 05:40:17.900977"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.4ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "B'Day"], ["artist_id", 1], ["created_at", "2023-06-23 05:40:17.905371"], ["updated_at", "2023-06-23 05:40:17.905371"]]
+  [1m[36mArtist Load (0.3ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.6ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "4"], ["artist_id", 1], ["created_at", "2023-06-23 05:40:17.910704"], ["updated_at", "2023-06-23 05:40:17.910704"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.3ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "The Pinkprint"], ["artist_id", 2], ["created_at", "2023-06-23 05:40:17.914991"], ["updated_at", "2023-06-23 05:40:17.914991"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.4ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Pink Friday"], ["artist_id", 2], ["created_at", "2023-06-23 05:40:17.919054"], ["updated_at", "2023-06-23 05:40:17.919054"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.3ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 1"], ["artist_id", 2], ["created_at", "2023-06-23 05:40:17.923339"], ["updated_at", "2023-06-23 05:40:17.923339"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.3ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 2"], ["artist_id", 2], ["created_at", "2023-06-23 05:40:17.927054"], ["updated_at", "2023-06-23 05:40:17.927054"]]
+  [1m[36mArtist Load (0.2ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.3ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Goodies"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.930697"], ["updated_at", "2023-06-23 05:40:17.930697"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.2ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Ciara"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.934015"], ["updated_at", "2023-06-23 05:40:17.934015"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.2ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 3"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.937076"], ["updated_at", "2023-06-23 05:40:17.937076"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.2ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 4"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.939675"], ["updated_at", "2023-06-23 05:40:17.939675"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.2ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 5"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.942368"], ["updated_at", "2023-06-23 05:40:17.942368"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.2ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 6"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.945021"], ["updated_at", "2023-06-23 05:40:17.945021"]]
+  [1m[36mArtist Load (0.1ms)[0m  [1m[34mSELECT "artists".* FROM "artists" WHERE "artists"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mAlbum Create (0.2ms)[0m  [1m[32mINSERT INTO "albums" ("title", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Album 7"], ["artist_id", 3], ["created_at", "2023-06-23 05:40:17.947584"], ["updated_at", "2023-06-23 05:40:17.947584"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.5ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Sorry"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.954811"], ["updated_at", "2023-06-23 05:40:17.954811"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Pray You Catch Me"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.957678"], ["updated_at", "2023-06-23 05:40:17.957678"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Don't Hurt Yourself"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.960176"], ["updated_at", "2023-06-23 05:40:17.960176"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "6 Inch"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.962742"], ["updated_at", "2023-06-23 05:40:17.962742"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Daddy Lessons"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.965160"], ["updated_at", "2023-06-23 05:40:17.965160"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Love Drought"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.967332"], ["updated_at", "2023-06-23 05:40:17.967332"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Freedom"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.969702"], ["updated_at", "2023-06-23 05:40:17.969702"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Formation"], ["album_id", 1], ["created_at", "2023-06-23 05:40:17.971949"], ["updated_at", "2023-06-23 05:40:17.971949"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Halo"], ["album_id", 2], ["created_at", "2023-06-23 05:40:17.974303"], ["updated_at", "2023-06-23 05:40:17.974303"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Video Phone"], ["album_id", 2], ["created_at", "2023-06-23 05:40:17.976614"], ["updated_at", "2023-06-23 05:40:17.976614"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "If I Were A Boy"], ["album_id", 2], ["created_at", "2023-06-23 05:40:17.978833"], ["updated_at", "2023-06-23 05:40:17.978833"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Disappear"], ["album_id", 2], ["created_at", "2023-06-23 05:40:17.983282"], ["updated_at", "2023-06-23 05:40:17.983282"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Satellites"], ["album_id", 2], ["created_at", "2023-06-23 05:40:17.985753"], ["updated_at", "2023-06-23 05:40:17.985753"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Diva"], ["album_id", 2], ["created_at", "2023-06-23 05:40:17.988172"], ["updated_at", "2023-06-23 05:40:17.988172"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Baby Boy"], ["album_id", 3], ["created_at", "2023-06-23 05:40:17.990537"], ["updated_at", "2023-06-23 05:40:17.990537"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Be with You"], ["album_id", 3], ["created_at", "2023-06-23 05:40:17.992919"], ["updated_at", "2023-06-23 05:40:17.992919"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Yes"], ["album_id", 3], ["created_at", "2023-06-23 05:40:17.995361"], ["updated_at", "2023-06-23 05:40:17.995361"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Ring the Alarm"], ["album_id", 4], ["created_at", "2023-06-23 05:40:17.997783"], ["updated_at", "2023-06-23 05:40:17.997783"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Green Light"], ["album_id", 4], ["created_at", "2023-06-23 05:40:18.000186"], ["updated_at", "2023-06-23 05:40:18.000186"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Irreplaceable"], ["album_id", 4], ["created_at", "2023-06-23 05:40:18.002255"], ["updated_at", "2023-06-23 05:40:18.002255"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Resentment"], ["album_id", 4], ["created_at", "2023-06-23 05:40:18.004603"], ["updated_at", "2023-06-23 05:40:18.004603"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Party"], ["album_id", 5], ["created_at", "2023-06-23 05:40:18.006896"], ["updated_at", "2023-06-23 05:40:18.006896"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Only"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.009204"], ["updated_at", "2023-06-23 05:40:18.009204"]]
+  [1m[36mAlbum Load (0.3ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Feeling Myself"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.011438"], ["updated_at", "2023-06-23 05:40:18.011438"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Want Some More"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.013669"], ["updated_at", "2023-06-23 05:40:18.013669"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.1ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Buy A Heart"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.015848"], ["updated_at", "2023-06-23 05:40:18.015848"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Win Again"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.017796"], ["updated_at", "2023-06-23 05:40:18.017796"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.1ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Grand Piano"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.019825"], ["updated_at", "2023-06-23 05:40:18.019825"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.3ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Favorite"], ["album_id", 6], ["created_at", "2023-06-23 05:40:18.021842"], ["updated_at", "2023-06-23 05:40:18.021842"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fly"], ["album_id", 7], ["created_at", "2023-06-23 05:40:18.024318"], ["updated_at", "2023-06-23 05:40:18.024318"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Your Love"], ["album_id", 7], ["created_at", "2023-06-23 05:40:18.026641"], ["updated_at", "2023-06-23 05:40:18.026641"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Dear Old Nicki"], ["album_id", 7], ["created_at", "2023-06-23 05:40:18.028920"], ["updated_at", "2023-06-23 05:40:18.028920"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "I'm the Best"], ["album_id", 7], ["created_at", "2023-06-23 05:40:18.031197"], ["updated_at", "2023-06-23 05:40:18.031197"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Last Chance"], ["album_id", 7], ["created_at", "2023-06-23 05:40:18.033476"], ["updated_at", "2023-06-23 05:40:18.033476"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Here I Am"], ["album_id", 7], ["created_at", "2023-06-23 05:40:18.035814"], ["updated_at", "2023-06-23 05:40:18.035814"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 1"], ["album_id", 8], ["created_at", "2023-06-23 05:40:18.038042"], ["updated_at", "2023-06-23 05:40:18.038042"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 2"], ["album_id", 8], ["created_at", "2023-06-23 05:40:18.040290"], ["updated_at", "2023-06-23 05:40:18.040290"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 3"], ["album_id", 8], ["created_at", "2023-06-23 05:40:18.042299"], ["updated_at", "2023-06-23 05:40:18.042299"]]
+  [1m[36mAlbum Load (0.2ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 4"], ["album_id", 8], ["created_at", "2023-06-23 05:40:18.046075"], ["updated_at", "2023-06-23 05:40:18.046075"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 5"], ["album_id", 9], ["created_at", "2023-06-23 05:40:18.048650"], ["updated_at", "2023-06-23 05:40:18.048650"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 6"], ["album_id", 9], ["created_at", "2023-06-23 05:40:18.051053"], ["updated_at", "2023-06-23 05:40:18.051053"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 7"], ["album_id", 9], ["created_at", "2023-06-23 05:40:18.053391"], ["updated_at", "2023-06-23 05:40:18.053391"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "1, 2 Step"], ["album_id", 10], ["created_at", "2023-06-23 05:40:18.055729"], ["updated_at", "2023-06-23 05:40:18.055729"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Pick Up the Phone"], ["album_id", 10], ["created_at", "2023-06-23 05:40:18.058080"], ["updated_at", "2023-06-23 05:40:18.058080"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Ooh Baby"], ["album_id", 10], ["created_at", "2023-06-23 05:40:18.060261"], ["updated_at", "2023-06-23 05:40:18.060261"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Goodies"], ["album_id", 10], ["created_at", "2023-06-23 05:40:18.062457"], ["updated_at", "2023-06-23 05:40:18.062457"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "And I"], ["album_id", 10], ["created_at", "2023-06-23 05:40:18.064886"], ["updated_at", "2023-06-23 05:40:18.064886"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Hotline"], ["album_id", 10], ["created_at", "2023-06-23 05:40:18.066773"], ["updated_at", "2023-06-23 05:40:18.066773"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "I'm Out"], ["album_id", 11], ["created_at", "2023-06-23 05:40:18.069098"], ["updated_at", "2023-06-23 05:40:18.069098"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Sophomore"], ["album_id", 11], ["created_at", "2023-06-23 05:40:18.071241"], ["updated_at", "2023-06-23 05:40:18.071241"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Keep On Lookin"], ["album_id", 11], ["created_at", "2023-06-23 05:40:18.073299"], ["updated_at", "2023-06-23 05:40:18.073299"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Livin' It Up"], ["album_id", 11], ["created_at", "2023-06-23 05:40:18.075532"], ["updated_at", "2023-06-23 05:40:18.075532"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.1ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Read My Lips"], ["album_id", 11], ["created_at", "2023-06-23 05:40:18.077674"], ["updated_at", "2023-06-23 05:40:18.077674"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 8"], ["album_id", 12], ["created_at", "2023-06-23 05:40:18.079800"], ["updated_at", "2023-06-23 05:40:18.079800"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.1ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 9"], ["album_id", 12], ["created_at", "2023-06-23 05:40:18.082057"], ["updated_at", "2023-06-23 05:40:18.082057"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.1ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 10"], ["album_id", 12], ["created_at", "2023-06-23 05:40:18.083932"], ["updated_at", "2023-06-23 05:40:18.083932"]]
+  [1m[36mAlbum Load (0.2ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 11"], ["album_id", 12], ["created_at", "2023-06-23 05:40:18.086465"], ["updated_at", "2023-06-23 05:40:18.086465"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 12"], ["album_id", 12], ["created_at", "2023-06-23 05:40:18.088634"], ["updated_at", "2023-06-23 05:40:18.088634"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 13], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 13"], ["album_id", 13], ["created_at", "2023-06-23 05:40:18.090774"], ["updated_at", "2023-06-23 05:40:18.090774"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 13], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 14"], ["album_id", 13], ["created_at", "2023-06-23 05:40:18.093078"], ["updated_at", "2023-06-23 05:40:18.093078"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 13], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.2ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 15"], ["album_id", 13], ["created_at", "2023-06-23 05:40:18.095311"], ["updated_at", "2023-06-23 05:40:18.095311"]]
+  [1m[36mAlbum Load (0.1ms)[0m  [1m[34mSELECT "albums".* FROM "albums" WHERE "albums"."id" = $1 LIMIT $2[0m  [["id", 13], ["LIMIT", 1]]
+  [1m[36mTrack Create (0.1ms)[0m  [1m[32mINSERT INTO "tracks" ("title", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Fake Track 16"], ["album_id", 13], ["created_at", "2023-06-23 05:40:18.097493"], ["updated_at", "2023-06-23 05:40:18.097493"]]
+  [1m[36mHouse Create (0.3ms)[0m  [1m[32mINSERT INTO "houses" ("address", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["address", "10th and Madison"], ["created_at", "2023-06-23 05:40:18.101769"], ["updated_at", "2023-06-23 05:40:18.101769"]]
+  [1m[36mHouse Create (0.2ms)[0m  [1m[32mINSERT INTO "houses" ("address", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["address", "Hopkins House"], ["created_at", "2023-06-23 05:40:18.103148"], ["updated_at", "2023-06-23 05:40:18.103148"]]
+  [1m[36mHouse Create (0.1ms)[0m  [1m[32mINSERT INTO "houses" ("address", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["address", "2990 Mission St"], ["created_at", "2023-06-23 05:40:18.104204"], ["updated_at", "2023-06-23 05:40:18.104204"]]
+  [1m[36mHouse Create (0.2ms)[0m  [1m[32mINSERT INTO "houses" ("address", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["address", "1458 11th Ave"], ["created_at", "2023-06-23 05:40:18.106620"], ["updated_at", "2023-06-23 05:40:18.106620"]]
+  [1m[36mHouse Load (0.1ms)[0m  [1m[34mSELECT "houses".* FROM "houses" WHERE "houses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mGardener Create (0.4ms)[0m  [1m[32mINSERT INTO "gardeners" ("name", "house_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Molly"], ["house_id", 1], ["created_at", "2023-06-23 05:40:18.113171"], ["updated_at", "2023-06-23 05:40:18.113171"]]
+  [1m[36mHouse Load (0.1ms)[0m  [1m[34mSELECT "houses".* FROM "houses" WHERE "houses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mGardener Create (0.2ms)[0m  [1m[32mINSERT INTO "gardeners" ("name", "house_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Scott"], ["house_id", 1], ["created_at", "2023-06-23 05:40:18.115927"], ["updated_at", "2023-06-23 05:40:18.115927"]]
+  [1m[36mHouse Load (0.1ms)[0m  [1m[34mSELECT "houses".* FROM "houses" WHERE "houses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mGardener Create (0.3ms)[0m  [1m[32mINSERT INTO "gardeners" ("name", "house_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Noemi"], ["house_id", 2], ["created_at", "2023-06-23 05:40:18.118086"], ["updated_at", "2023-06-23 05:40:18.118086"]]
+  [1m[36mHouse Load (0.1ms)[0m  [1m[34mSELECT "houses".* FROM "houses" WHERE "houses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mGardener Create (0.2ms)[0m  [1m[32mINSERT INTO "gardeners" ("name", "house_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Arthur"], ["house_id", 3], ["created_at", "2023-06-23 05:40:18.120604"], ["updated_at", "2023-06-23 05:40:18.120604"]]
+  [1m[36mHouse Load (0.1ms)[0m  [1m[34mSELECT "houses".* FROM "houses" WHERE "houses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mGardener Create (0.2ms)[0m  [1m[32mINSERT INTO "gardeners" ("name", "house_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Fred"], ["house_id", 4], ["created_at", "2023-06-23 05:40:18.123304"], ["updated_at", "2023-06-23 05:40:18.123304"]]
+  [1m[36mHouse Load (0.1ms)[0m  [1m[34mSELECT "houses".* FROM "houses" WHERE "houses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mGardener Create (0.2ms)[0m  [1m[32mINSERT INTO "gardeners" ("name", "house_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Sandy"], ["house_id", 4], ["created_at", "2023-06-23 05:40:18.125864"], ["updated_at", "2023-06-23 05:40:18.125864"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.4ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Maple Ash"], ["gardener_id", 1], ["created_at", "2023-06-23 05:40:18.132918"], ["updated_at", "2023-06-23 05:40:18.132918"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Sweet Woodruff"], ["gardener_id", 1], ["created_at", "2023-06-23 05:40:18.135801"], ["updated_at", "2023-06-23 05:40:18.135801"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Dandelion"], ["gardener_id", 1], ["created_at", "2023-06-23 05:40:18.138264"], ["updated_at", "2023-06-23 05:40:18.138264"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Red Rose"], ["gardener_id", 1], ["created_at", "2023-06-23 05:40:18.140903"], ["updated_at", "2023-06-23 05:40:18.140903"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Huckleberry"], ["gardener_id", 2], ["created_at", "2023-06-23 05:40:18.143393"], ["updated_at", "2023-06-23 05:40:18.143393"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Flowering Dogwood"], ["gardener_id", 2], ["created_at", "2023-06-23 05:40:18.145900"], ["updated_at", "2023-06-23 05:40:18.145900"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Lily"], ["gardener_id", 2], ["created_at", "2023-06-23 05:40:18.148356"], ["updated_at", "2023-06-23 05:40:18.148356"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Snapdragon"], ["gardener_id", 2], ["created_at", "2023-06-23 05:40:18.150482"], ["updated_at", "2023-06-23 05:40:18.150482"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Golden Barrel"], ["gardener_id", 2], ["created_at", "2023-06-23 05:40:18.152842"], ["updated_at", "2023-06-23 05:40:18.152842"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Penny Hedge"], ["gardener_id", 3], ["created_at", "2023-06-23 05:40:18.155168"], ["updated_at", "2023-06-23 05:40:18.155168"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Pregnant Onion"], ["gardener_id", 3], ["created_at", "2023-06-23 05:40:18.157488"], ["updated_at", "2023-06-23 05:40:18.157488"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Moss"], ["gardener_id", 3], ["created_at", "2023-06-23 05:40:18.159807"], ["updated_at", "2023-06-23 05:40:18.159807"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.1ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Parlor Palm"], ["gardener_id", 3], ["created_at", "2023-06-23 05:40:18.162169"], ["updated_at", "2023-06-23 05:40:18.162169"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Sunflower"], ["gardener_id", 3], ["created_at", "2023-06-23 05:40:18.164355"], ["updated_at", "2023-06-23 05:40:18.164355"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Yellow Fieldcress"], ["gardener_id", 4], ["created_at", "2023-06-23 05:40:18.166520"], ["updated_at", "2023-06-23 05:40:18.166520"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.1ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Lamb's Ear"], ["gardener_id", 4], ["created_at", "2023-06-23 05:40:18.168709"], ["updated_at", "2023-06-23 05:40:18.168709"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Yellow Fieldcress"], ["gardener_id", 4], ["created_at", "2023-06-23 05:40:18.172391"], ["updated_at", "2023-06-23 05:40:18.172391"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Brown-eyed Susan"], ["gardener_id", 4], ["created_at", "2023-06-23 05:40:18.174756"], ["updated_at", "2023-06-23 05:40:18.174756"]]
+  [1m[36mGardener Load (0.4ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Collard"], ["gardener_id", 5], ["created_at", "2023-06-23 05:40:18.177090"], ["updated_at", "2023-06-23 05:40:18.177090"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Purple Kale"], ["gardener_id", 5], ["created_at", "2023-06-23 05:40:18.179422"], ["updated_at", "2023-06-23 05:40:18.179422"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Strawberries"], ["gardener_id", 5], ["created_at", "2023-06-23 05:40:18.182057"], ["updated_at", "2023-06-23 05:40:18.182057"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Basil"], ["gardener_id", 5], ["created_at", "2023-06-23 05:40:18.184527"], ["updated_at", "2023-06-23 05:40:18.184527"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Fennel"], ["gardener_id", 5], ["created_at", "2023-06-23 05:40:18.186851"], ["updated_at", "2023-06-23 05:40:18.186851"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Rosemary"], ["gardener_id", 6], ["created_at", "2023-06-23 05:40:18.188932"], ["updated_at", "2023-06-23 05:40:18.188932"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Chrysanthemum"], ["gardener_id", 6], ["created_at", "2023-06-23 05:40:18.191254"], ["updated_at", "2023-06-23 05:40:18.191254"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Orchid"], ["gardener_id", 6], ["created_at", "2023-06-23 05:40:18.193615"], ["updated_at", "2023-06-23 05:40:18.193615"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.1ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Daisy"], ["gardener_id", 6], ["created_at", "2023-06-23 05:40:18.195829"], ["updated_at", "2023-06-23 05:40:18.195829"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.1ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Bird of Paradise"], ["gardener_id", 6], ["created_at", "2023-06-23 05:40:18.198113"], ["updated_at", "2023-06-23 05:40:18.198113"]]
+  [1m[36mGardener Load (0.1ms)[0m  [1m[34mSELECT "gardeners".* FROM "gardeners" WHERE "gardeners"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mPlant Create (0.2ms)[0m  [1m[32mINSERT INTO "plants" ("species", "gardener_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["species", "Green Cottonwood"], ["gardener_id", 6], ["created_at", "2023-06-23 05:40:18.200283"], ["updated_at", "2023-06-23 05:40:18.200283"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.4ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 46], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.206883"], ["updated_at", "2023-06-23 05:40:18.206883"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 18], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.209572"], ["updated_at", "2023-06-23 05:40:18.209572"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 9], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.212010"], ["updated_at", "2023-06-23 05:40:18.212010"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 35], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.214417"], ["updated_at", "2023-06-23 05:40:18.214417"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 34], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.216612"], ["updated_at", "2023-06-23 05:40:18.216612"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 13], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.218529"], ["updated_at", "2023-06-23 05:40:18.218529"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 41], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.220784"], ["updated_at", "2023-06-23 05:40:18.220784"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 9], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.222948"], ["updated_at", "2023-06-23 05:40:18.222948"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.3ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 28], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.240389"], ["updated_at", "2023-06-23 05:40:18.240389"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.3ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 18], ["plant_id", 1], ["created_at", "2023-06-23 05:40:18.269321"], ["updated_at", "2023-06-23 05:40:18.269321"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 8], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.272926"], ["updated_at", "2023-06-23 05:40:18.272926"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 26], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.275696"], ["updated_at", "2023-06-23 05:40:18.275696"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 22], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.278692"], ["updated_at", "2023-06-23 05:40:18.278692"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 42], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.281513"], ["updated_at", "2023-06-23 05:40:18.281513"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 34], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.284277"], ["updated_at", "2023-06-23 05:40:18.284277"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 22], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.286958"], ["updated_at", "2023-06-23 05:40:18.286958"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 39], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.289536"], ["updated_at", "2023-06-23 05:40:18.289536"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 31], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.292104"], ["updated_at", "2023-06-23 05:40:18.292104"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 20], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.294654"], ["updated_at", "2023-06-23 05:40:18.294654"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 31], ["plant_id", 2], ["created_at", "2023-06-23 05:40:18.297085"], ["updated_at", "2023-06-23 05:40:18.297085"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 19], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.299437"], ["updated_at", "2023-06-23 05:40:18.299437"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 16], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.301458"], ["updated_at", "2023-06-23 05:40:18.301458"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 5], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.303711"], ["updated_at", "2023-06-23 05:40:18.303711"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 4], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.306024"], ["updated_at", "2023-06-23 05:40:18.306024"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 39], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.308310"], ["updated_at", "2023-06-23 05:40:18.308310"]]
+  [1m[36mPlant Load (0.5ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 8], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.310788"], ["updated_at", "2023-06-23 05:40:18.310788"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 30], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.313157"], ["updated_at", "2023-06-23 05:40:18.313157"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 4], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.315698"], ["updated_at", "2023-06-23 05:40:18.315698"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 24], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.318108"], ["updated_at", "2023-06-23 05:40:18.318108"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 34], ["plant_id", 3], ["created_at", "2023-06-23 05:40:18.320589"], ["updated_at", "2023-06-23 05:40:18.320589"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 36], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.322697"], ["updated_at", "2023-06-23 05:40:18.322697"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 29], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.325119"], ["updated_at", "2023-06-23 05:40:18.325119"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 27], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.327443"], ["updated_at", "2023-06-23 05:40:18.327443"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 10], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.329762"], ["updated_at", "2023-06-23 05:40:18.329762"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 10], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.331890"], ["updated_at", "2023-06-23 05:40:18.331890"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 25], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.334049"], ["updated_at", "2023-06-23 05:40:18.334049"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 38], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.336185"], ["updated_at", "2023-06-23 05:40:18.336185"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 29], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.338249"], ["updated_at", "2023-06-23 05:40:18.338249"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 28], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.340265"], ["updated_at", "2023-06-23 05:40:18.340265"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 26], ["plant_id", 4], ["created_at", "2023-06-23 05:40:18.342349"], ["updated_at", "2023-06-23 05:40:18.342349"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 29], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.344365"], ["updated_at", "2023-06-23 05:40:18.344365"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 47], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.346255"], ["updated_at", "2023-06-23 05:40:18.346255"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 8], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.348414"], ["updated_at", "2023-06-23 05:40:18.348414"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 31], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.350321"], ["updated_at", "2023-06-23 05:40:18.350321"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 27], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.352233"], ["updated_at", "2023-06-23 05:40:18.352233"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 23], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.354236"], ["updated_at", "2023-06-23 05:40:18.354236"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 46], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.356185"], ["updated_at", "2023-06-23 05:40:18.356185"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 45], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.358087"], ["updated_at", "2023-06-23 05:40:18.358087"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 11], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.360237"], ["updated_at", "2023-06-23 05:40:18.360237"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 3], ["plant_id", 5], ["created_at", "2023-06-23 05:40:18.362246"], ["updated_at", "2023-06-23 05:40:18.362246"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 50], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.364464"], ["updated_at", "2023-06-23 05:40:18.364464"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 4], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.366773"], ["updated_at", "2023-06-23 05:40:18.366773"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 47], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.368912"], ["updated_at", "2023-06-23 05:40:18.368912"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 42], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.371343"], ["updated_at", "2023-06-23 05:40:18.371343"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 41], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.373421"], ["updated_at", "2023-06-23 05:40:18.373421"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 10], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.375514"], ["updated_at", "2023-06-23 05:40:18.375514"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 2], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.377725"], ["updated_at", "2023-06-23 05:40:18.377725"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 33], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.379858"], ["updated_at", "2023-06-23 05:40:18.379858"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 33], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.382065"], ["updated_at", "2023-06-23 05:40:18.382065"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 42], ["plant_id", 6], ["created_at", "2023-06-23 05:40:18.384162"], ["updated_at", "2023-06-23 05:40:18.384162"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 29], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.386205"], ["updated_at", "2023-06-23 05:40:18.386205"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 33], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.388346"], ["updated_at", "2023-06-23 05:40:18.388346"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 8], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.391305"], ["updated_at", "2023-06-23 05:40:18.391305"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 7], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.393435"], ["updated_at", "2023-06-23 05:40:18.393435"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 8], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.395584"], ["updated_at", "2023-06-23 05:40:18.395584"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 49], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.397670"], ["updated_at", "2023-06-23 05:40:18.397670"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 35], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.399785"], ["updated_at", "2023-06-23 05:40:18.399785"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 24], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.401871"], ["updated_at", "2023-06-23 05:40:18.401871"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 17], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.403929"], ["updated_at", "2023-06-23 05:40:18.403929"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 23], ["plant_id", 7], ["created_at", "2023-06-23 05:40:18.406047"], ["updated_at", "2023-06-23 05:40:18.406047"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 27], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.408018"], ["updated_at", "2023-06-23 05:40:18.408018"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 38], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.410045"], ["updated_at", "2023-06-23 05:40:18.410045"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 42], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.412114"], ["updated_at", "2023-06-23 05:40:18.412114"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 6], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.414127"], ["updated_at", "2023-06-23 05:40:18.414127"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 43], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.416096"], ["updated_at", "2023-06-23 05:40:18.416096"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 5], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.418203"], ["updated_at", "2023-06-23 05:40:18.418203"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 16], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.420150"], ["updated_at", "2023-06-23 05:40:18.420150"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 28], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.423473"], ["updated_at", "2023-06-23 05:40:18.423473"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 21], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.425831"], ["updated_at", "2023-06-23 05:40:18.425831"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.3ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 14], ["plant_id", 8], ["created_at", "2023-06-23 05:40:18.428144"], ["updated_at", "2023-06-23 05:40:18.428144"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 24], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.430351"], ["updated_at", "2023-06-23 05:40:18.430351"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 10], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.432469"], ["updated_at", "2023-06-23 05:40:18.432469"]]
+  [1m[36mPlant Load (0.2ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 6], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.434691"], ["updated_at", "2023-06-23 05:40:18.434691"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 14], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.436853"], ["updated_at", "2023-06-23 05:40:18.436853"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 6], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.438988"], ["updated_at", "2023-06-23 05:40:18.438988"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 28], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.440938"], ["updated_at", "2023-06-23 05:40:18.440938"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 29], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.443011"], ["updated_at", "2023-06-23 05:40:18.443011"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 2], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.445120"], ["updated_at", "2023-06-23 05:40:18.445120"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 45], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.447232"], ["updated_at", "2023-06-23 05:40:18.447232"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 9], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 13], ["plant_id", 9], ["created_at", "2023-06-23 05:40:18.449289"], ["updated_at", "2023-06-23 05:40:18.449289"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.3ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 50], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.451355"], ["updated_at", "2023-06-23 05:40:18.451355"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 35], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.453518"], ["updated_at", "2023-06-23 05:40:18.453518"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 45], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.455553"], ["updated_at", "2023-06-23 05:40:18.455553"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 16], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.457876"], ["updated_at", "2023-06-23 05:40:18.457876"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 17], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.459742"], ["updated_at", "2023-06-23 05:40:18.459742"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 12], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.462071"], ["updated_at", "2023-06-23 05:40:18.462071"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 24], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.464277"], ["updated_at", "2023-06-23 05:40:18.464277"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 5], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.466356"], ["updated_at", "2023-06-23 05:40:18.466356"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.3ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 14], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.468435"], ["updated_at", "2023-06-23 05:40:18.468435"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 10], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 41], ["plant_id", 10], ["created_at", "2023-06-23 05:40:18.470843"], ["updated_at", "2023-06-23 05:40:18.470843"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 15], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.473045"], ["updated_at", "2023-06-23 05:40:18.473045"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 22], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.475295"], ["updated_at", "2023-06-23 05:40:18.475295"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 4], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.477517"], ["updated_at", "2023-06-23 05:40:18.477517"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 38], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.479488"], ["updated_at", "2023-06-23 05:40:18.479488"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 47], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.481758"], ["updated_at", "2023-06-23 05:40:18.481758"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 18], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.483910"], ["updated_at", "2023-06-23 05:40:18.483910"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 38], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.486066"], ["updated_at", "2023-06-23 05:40:18.486066"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 50], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.488496"], ["updated_at", "2023-06-23 05:40:18.488496"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 2], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.490380"], ["updated_at", "2023-06-23 05:40:18.490380"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 41], ["plant_id", 11], ["created_at", "2023-06-23 05:40:18.493050"], ["updated_at", "2023-06-23 05:40:18.493050"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 26], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.495360"], ["updated_at", "2023-06-23 05:40:18.495360"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 33], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.497559"], ["updated_at", "2023-06-23 05:40:18.497559"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 20], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.499494"], ["updated_at", "2023-06-23 05:40:18.499494"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 5], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.501606"], ["updated_at", "2023-06-23 05:40:18.501606"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 10], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.504009"], ["updated_at", "2023-06-23 05:40:18.504009"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 28], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.506157"], ["updated_at", "2023-06-23 05:40:18.506157"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 16], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.508375"], ["updated_at", "2023-06-23 05:40:18.508375"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.2ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 50], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.510299"], ["updated_at", "2023-06-23 05:40:18.510299"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 45], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.512443"], ["updated_at", "2023-06-23 05:40:18.512443"]]
+  [1m[36mPlant Load (0.1ms)[0m  [1m[34mSELECT "plants".* FROM "plants" WHERE "plants"."id" = $1 LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mSeed Create (0.1ms)[0m  [1m[32mINSERT INTO "seeds" ("count", "plant_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["count", 22], ["plant_id", 12], ["created_at", "2023-06-23 05:40:18.514627"], ["updated_at", "2023-06-23 05:40:18.514627"]]
+  [1m[36mRoute Create (0.3ms)[0m  [1m[32mINSERT INTO "routes" ("number", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["number", 48], ["created_at", "2023-06-23 05:40:18.518966"], ["updated_at", "2023-06-23 05:40:18.518966"]]
+  [1m[36mRoute Create (0.1ms)[0m  [1m[32mINSERT INTO "routes" ("number", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["number", 24], ["created_at", "2023-06-23 05:40:18.520159"], ["updated_at", "2023-06-23 05:40:18.520159"]]
+  [1m[36mRoute Create (0.3ms)[0m  [1m[32mINSERT INTO "routes" ("number", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["number", 49], ["created_at", "2023-06-23 05:40:18.521279"], ["updated_at", "2023-06-23 05:40:18.521279"]]
+  [1m[36mRoute Create (0.2ms)[0m  [1m[32mINSERT INTO "routes" ("number", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["number", 28], ["created_at", "2023-06-23 05:40:18.522376"], ["updated_at", "2023-06-23 05:40:18.522376"]]
+  [1m[36mRoute Create (0.1ms)[0m  [1m[32mINSERT INTO "routes" ("number", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["number", 10], ["created_at", "2023-06-23 05:40:18.523367"], ["updated_at", "2023-06-23 05:40:18.523367"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mBus Create (0.4ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "VW"], ["route_id", 1], ["created_at", "2023-06-23 05:40:18.530034"], ["updated_at", "2023-06-23 05:40:18.530034"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mBus Create (0.3ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MK"], ["route_id", 1], ["created_at", "2023-06-23 05:40:18.532809"], ["updated_at", "2023-06-23 05:40:18.532809"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "JN"], ["route_id", 1], ["created_at", "2023-06-23 05:40:18.535366"], ["updated_at", "2023-06-23 05:40:18.535366"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "PL"], ["route_id", 1], ["created_at", "2023-06-23 05:40:18.537596"], ["updated_at", "2023-06-23 05:40:18.537596"]]
+  [1m[36mRoute Load (0.2ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "EB"], ["route_id", 1], ["created_at", "2023-06-23 05:40:18.539701"], ["updated_at", "2023-06-23 05:40:18.539701"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MiniTour"], ["route_id", 2], ["created_at", "2023-06-23 05:40:18.541844"], ["updated_at", "2023-06-23 05:40:18.541844"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mBus Create (0.3ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MiniRack"], ["route_id", 2], ["created_at", "2023-06-23 05:40:18.543986"], ["updated_at", "2023-06-23 05:40:18.543986"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MiniMagic"], ["route_id", 2], ["created_at", "2023-06-23 05:40:18.546219"], ["updated_at", "2023-06-23 05:40:18.546219"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MiniBus"], ["route_id", 2], ["created_at", "2023-06-23 05:40:18.548044"], ["updated_at", "2023-06-23 05:40:18.548044"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MiniVan"], ["route_id", 2], ["created_at", "2023-06-23 05:40:18.550145"], ["updated_at", "2023-06-23 05:40:18.550145"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "MiniSup"], ["route_id", 2], ["created_at", "2023-06-23 05:40:18.552384"], ["updated_at", "2023-06-23 05:40:18.552384"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Paragon"], ["route_id", 3], ["created_at", "2023-06-23 05:40:18.554531"], ["updated_at", "2023-06-23 05:40:18.554531"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Aero Town"], ["route_id", 3], ["created_at", "2023-06-23 05:40:18.556697"], ["updated_at", "2023-06-23 05:40:18.556697"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Wonder"], ["route_id", 3], ["created_at", "2023-06-23 05:40:18.558583"], ["updated_at", "2023-06-23 05:40:18.558583"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Break Speed"], ["route_id", 3], ["created_at", "2023-06-23 05:40:18.560617"], ["updated_at", "2023-06-23 05:40:18.560617"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Spectra"], ["route_id", 3], ["created_at", "2023-06-23 05:40:18.563079"], ["updated_at", "2023-06-23 05:40:18.563079"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "A"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.565237"], ["updated_at", "2023-06-23 05:40:18.565237"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.3ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "B"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.567478"], ["updated_at", "2023-06-23 05:40:18.567478"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "C"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.569534"], ["updated_at", "2023-06-23 05:40:18.569534"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "D"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.571603"], ["updated_at", "2023-06-23 05:40:18.571603"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "E"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.575349"], ["updated_at", "2023-06-23 05:40:18.575349"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "F"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.577617"], ["updated_at", "2023-06-23 05:40:18.577617"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "G"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.579940"], ["updated_at", "2023-06-23 05:40:18.579940"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "H"], ["route_id", 4], ["created_at", "2023-06-23 05:40:18.582194"], ["updated_at", "2023-06-23 05:40:18.582194"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Globus"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.584398"], ["updated_at", "2023-06-23 05:40:18.584398"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Versa"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.586755"], ["updated_at", "2023-06-23 05:40:18.586755"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Magic"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.588988"], ["updated_at", "2023-06-23 05:40:18.588988"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Avada"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.591134"], ["updated_at", "2023-06-23 05:40:18.591134"]]
+  [1m[36mRoute Load (0.1ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Elm"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.593332"], ["updated_at", "2023-06-23 05:40:18.593332"]]
+  [1m[36mRoute Load (0.2ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.2ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Wicker"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.595451"], ["updated_at", "2023-06-23 05:40:18.595451"]]
+  [1m[36mRoute Load (0.2ms)[0m  [1m[34mSELECT "routes".* FROM "routes" WHERE "routes"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mBus Create (0.1ms)[0m  [1m[32mINSERT INTO "buses" ("model", "route_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["model", "Rapid"], ["route_id", 5], ["created_at", "2023-06-23 05:40:18.597682"], ["updated_at", "2023-06-23 05:40:18.597682"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.4ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Joan Lee"], ["bus_id", 1], ["created_at", "2023-06-23 05:40:18.603853"], ["updated_at", "2023-06-23 05:40:18.603853"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Charlie McDonald"], ["bus_id", 1], ["created_at", "2023-06-23 05:40:18.606308"], ["updated_at", "2023-06-23 05:40:18.606308"]]
+  [1m[36mBus Load (0.2ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Kevin Quashie"], ["bus_id", 1], ["created_at", "2023-06-23 05:40:18.608691"], ["updated_at", "2023-06-23 05:40:18.608691"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Michael Wallace"], ["bus_id", 1], ["created_at", "2023-06-23 05:40:18.610939"], ["updated_at", "2023-06-23 05:40:18.610939"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Mia Mingus"], ["bus_id", 1], ["created_at", "2023-06-23 05:40:18.613128"], ["updated_at", "2023-06-23 05:40:18.613128"]]
+  [1m[36mBus Load (0.2ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Ed Michaels"], ["bus_id", 2], ["created_at", "2023-06-23 05:40:18.615498"], ["updated_at", "2023-06-23 05:40:18.615498"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.1ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Lisa Frank"], ["bus_id", 2], ["created_at", "2023-06-23 05:40:18.617673"], ["updated_at", "2023-06-23 05:40:18.617673"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.3ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Willy Wonka"], ["bus_id", 2], ["created_at", "2023-06-23 05:40:18.619619"], ["updated_at", "2023-06-23 05:40:18.619619"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.1ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Rihanna"], ["bus_id", 2], ["created_at", "2023-06-23 05:40:18.621824"], ["updated_at", "2023-06-23 05:40:18.621824"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Sharla Alegria"], ["bus_id", 2], ["created_at", "2023-06-23 05:40:18.624007"], ["updated_at", "2023-06-23 05:40:18.624007"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Roger Sanders"], ["bus_id", 3], ["created_at", "2023-06-23 05:40:18.626242"], ["updated_at", "2023-06-23 05:40:18.626242"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Tom Cathy"], ["bus_id", 3], ["created_at", "2023-06-23 05:40:18.628681"], ["updated_at", "2023-06-23 05:40:18.628681"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.3ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Kanye West"], ["bus_id", 3], ["created_at", "2023-06-23 05:40:18.630969"], ["updated_at", "2023-06-23 05:40:18.630969"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Anderson Paak"], ["bus_id", 3], ["created_at", "2023-06-23 05:40:18.633295"], ["updated_at", "2023-06-23 05:40:18.633295"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Sarah Shahi"], ["bus_id", 3], ["created_at", "2023-06-23 05:40:18.635492"], ["updated_at", "2023-06-23 05:40:18.635492"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Tom Cathy"], ["bus_id", 3], ["created_at", "2023-06-23 05:40:18.637358"], ["updated_at", "2023-06-23 05:40:18.637358"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Harold Martin"], ["bus_id", 4], ["created_at", "2023-06-23 05:40:18.639482"], ["updated_at", "2023-06-23 05:40:18.639482"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.3ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Willow Smith"], ["bus_id", 4], ["created_at", "2023-06-23 05:40:18.641981"], ["updated_at", "2023-06-23 05:40:18.641981"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "DJ Mustard"], ["bus_id", 4], ["created_at", "2023-06-23 05:40:18.644591"], ["updated_at", "2023-06-23 05:40:18.644591"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Nia King"], ["bus_id", 4], ["created_at", "2023-06-23 05:40:18.646759"], ["updated_at", "2023-06-23 05:40:18.646759"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Alice Waters"], ["bus_id", 4], ["created_at", "2023-06-23 05:40:18.648918"], ["updated_at", "2023-06-23 05:40:18.648918"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Grace Lee Boggs"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.651593"], ["updated_at", "2023-06-23 05:40:18.651593"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Dulce Rivera"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.653766"], ["updated_at", "2023-06-23 05:40:18.653766"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Michel Gerard"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.655962"], ["updated_at", "2023-06-23 05:40:18.655962"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.1ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Roger Larson"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.657825"], ["updated_at", "2023-06-23 05:40:18.657825"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Paul Ekman"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.659937"], ["updated_at", "2023-06-23 05:40:18.659937"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Richard Nesbitt"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.662153"], ["updated_at", "2023-06-23 05:40:18.662153"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Michael Li"], ["bus_id", 5], ["created_at", "2023-06-23 05:40:18.664546"], ["updated_at", "2023-06-23 05:40:18.664546"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Megan West"], ["bus_id", 6], ["created_at", "2023-06-23 05:40:18.666834"], ["updated_at", "2023-06-23 05:40:18.666834"]]
+  [1m[36mBus Load (0.2ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Katherine Key"], ["bus_id", 6], ["created_at", "2023-06-23 05:40:18.668907"], ["updated_at", "2023-06-23 05:40:18.668907"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.1ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Alfonso Cuaron"], ["bus_id", 6], ["created_at", "2023-06-23 05:40:18.670989"], ["updated_at", "2023-06-23 05:40:18.670989"]]
+  [1m[36mBus Load (0.2ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Emily Gilmore"], ["bus_id", 6], ["created_at", "2023-06-23 05:40:18.673344"], ["updated_at", "2023-06-23 05:40:18.673344"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Ariana Grande"], ["bus_id", 6], ["created_at", "2023-06-23 05:40:18.675497"], ["updated_at", "2023-06-23 05:40:18.675497"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.3ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Maria Ahmed"], ["bus_id", 7], ["created_at", "2023-06-23 05:40:18.677675"], ["updated_at", "2023-06-23 05:40:18.677675"]]
+  [1m[36mBus Load (0.2ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.3ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Charlie Simmons"], ["bus_id", 7], ["created_at", "2023-06-23 05:40:18.680482"], ["updated_at", "2023-06-23 05:40:18.680482"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Rage Newton"], ["bus_id", 7], ["created_at", "2023-06-23 05:40:18.683124"], ["updated_at", "2023-06-23 05:40:18.683124"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Michael Hooton"], ["bus_id", 7], ["created_at", "2023-06-23 05:40:18.685480"], ["updated_at", "2023-06-23 05:40:18.685480"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Jett Taylor"], ["bus_id", 7], ["created_at", "2023-06-23 05:40:18.687800"], ["updated_at", "2023-06-23 05:40:18.687800"]]
+  [1m[36mBus Load (0.1ms)[0m  [1m[34mSELECT "buses".* FROM "buses" WHERE "buses"."id" = $1 LIMIT $2[0m  [["id", 7], ["LIMIT", 1]]
+  [1m[36mDriver Create (0.2ms)[0m  [1m[32mINSERT INTO "drivers" ("name", "bus_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Shaleece Haas"], ["bus_id", 7], ["created_at", "2023-06-23 05:40:18.690064"], ["updated_at", "2023-06-23 05:40:18.690064"]]
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
