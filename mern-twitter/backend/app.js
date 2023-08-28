@@ -6,6 +6,7 @@ const debug = require('debug');
 // ADD THESE TWO LINES
 const cors = require('cors');
 const csurf = require('csurf');
+require('./models/User');
 const { isProduction } = require('./config/keys');
 
 const usersRouter = require('./routes/api/users');
